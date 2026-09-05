@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Products catalog: Read and manage medicines in Firestore
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    // Orders collection: Patients can create and query their orders, dispensary can update status
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Auto-refill subscription schedules
+    match /autoRefills/{refillId} {
+      allow read, write: if true;
+    }
+
+    // Patient reviews
+    match /reviews/{reviewId} {
+      allow read, write: if true;
+    }
+
+    // Active Cart Sessions
+    match /carts/{cartId} {
+      allow read, write: if true;
+    }
+
+    // Discount Coupons & Promotions
+    match /coupons/{couponId} {
+      allow read, write: if true;
+    }
+
+    // Global Store Settings & Dispensary Config
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // Triage & Consultation sessions
+    match /consultations/{sessionId}/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+

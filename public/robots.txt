@@ -1,0 +1,15 @@
+# Rest Easy Meds UK Robots.txt
+User-agent: *
+Allow: /
+Allow: /?tab=*
+Allow: /?med=*
+Allow: /?category=*
+Disallow: /?tab=admin
+Disallow: /admin
+Disallow: /api/admin/*
+
+# Crawl Delay
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://resteasymeds.co.uk/sitemap.xml

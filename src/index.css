@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #0b0f19;
+    --bg-card: #0f172a;
+    --bg-card-hover: #1e293b;
+    --border-cyan: rgba(6, 182, 212, 0.2);
+    --border-cyan-light: rgba(34, 211, 238, 0.35);
+  }
+
+  body {
+    background-color: #0b0f19;
+    color: #f1f5f9;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  
+  h1, h2, h3, .font-serif-heading, .font-display {
+    font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.025em;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Typography Format Themes & CSS Variables */
+:root {
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+}
+
+html.text-format-modern,
+body.text-format-modern,
+.text-format-modern {
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+}
+
+html.text-format-clean,
+body.text-format-clean,
+.text-format-clean {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html.text-format-lexend,
+body.text-format-lexend,
+.text-format-lexend {
+  --font-body: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Lexend', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html.text-format-classic,
+body.text-format-classic,
+.text-format-classic {
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Source Serif 4', Georgia, serif;
+}
+
+/* Enforce font family across standard elements and Tailwind classes */
+html,
+body,
+button,
+input,
+select,
+textarea,
+p,
+span,
+div,
+.font-sans {
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-serif-heading,
+.font-display {
+  font-family: var(--font-heading) !important;
+}
+
+/* Text Size Scaling on html so REM units actually scale uniformly */
+html.text-scale-compact {
+  font-size: 14px !important;
+}
+html.text-scale-normal {
+  font-size: 16px !important;
+}
+html.text-scale-large {
+  font-size: 18px !important;
+}
+
+/* Custom Nordic Slate & Arctic Cyan Shadows and Borders */
+.cyan-card, .emerald-card {
+  background: linear-gradient(145deg, #111c30 0%, #0b0f19 100%);
+  border: 1px solid rgba(6, 182, 212, 0.22);
+}
+
+.cyan-card:hover, .emerald-card:hover {
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.15);
+}
+
+.cyan-glow, .emerald-glow {
+  box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25);
+}
+
+.cyan-glow-sm, .emerald-glow-sm {
+  box-shadow: 0 0 15px -3px rgba(6, 182, 212, 0.2);
+}
+
+.amber-glow-sm {
+  box-shadow: 0 0 15px -3px rgba(251, 191, 36, 0.3);
+}
+
+/* Custom scrollbar for Nordic Slate UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4;
+}
+
+/* Animations */
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}

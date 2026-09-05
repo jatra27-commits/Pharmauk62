@@ -1,0 +1,6 @@
+{
+  "name": "PureSleep Pharma",
+  "description": "Premium UK Online Pharmacy & E-Commerce platform offering genuine medications, multi-pack selection, next-day discrete delivery, auto-refills, and real-time order tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

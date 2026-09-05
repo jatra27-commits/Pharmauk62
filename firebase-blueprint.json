@@ -1,0 +1,179 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Pharmaceutical product in the dispensary catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "brand": { "type": "string" },
+        "genericName": { "type": "string" },
+        "category": { "type": "string" },
+        "legalCategory": { "type": "string" },
+        "basePrice": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "inStock": { "type": "boolean" },
+        "stockCount": { "type": "number" },
+        "strength": { "type": "string" },
+        "format": { "type": "string" },
+        "activeIngredient": { "type": "string" },
+        "badge": { "type": "string" },
+        "sku": { "type": "string" },
+        "deliveryEstimate": { "type": "string" },
+        "prescriptionRequired": { "type": "boolean" },
+        "bnfIndication": { "type": "string" },
+        "dosageAdult": { "type": "string" },
+        "usageInstructions": { "type": "array" },
+        "cautions": { "type": "array" },
+        "commonSideEffects": { "type": "array" },
+        "description": { "type": "string" },
+        "packOptions": { "type": "array" },
+        "isControlled": { "type": "boolean" }
+      },
+      "required": ["id", "name", "category", "basePrice", "format", "packOptions"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Prescription and over-the-counter medicine order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "date": { "type": "string" },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "loyaltyDiscount": { "type": "number" },
+        "autoRefillDiscount": { "type": "number" },
+        "shippingFee": { "type": "number" },
+        "shippingMethod": { "type": "string" },
+        "total": { "type": "number" },
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "deliveryAddress": { "type": "string" },
+        "city": { "type": "string" },
+        "postcode": { "type": "string" },
+        "country": { "type": "string" },
+        "deliveryNotes": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "status": { "type": "string" },
+        "trackingNumber": { "type": "string" },
+        "trackingHistory": { "type": "array" },
+        "hasAutoRefill": { "type": "boolean" }
+      },
+      "required": ["id", "createdAt", "customerName", "phone", "deliveryAddress", "postcode", "paymentMethod", "total"]
+    },
+    "AutoRefill": {
+      "title": "AutoRefill",
+      "description": "Recurring subscription schedule for medications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "orderId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "deliveryAddress": { "type": "string" },
+        "postcode": { "type": "string" },
+        "productName": { "type": "string" },
+        "packLabel": { "type": "string" },
+        "pricePerRefill": { "type": "number" },
+        "intervalDays": { "type": "number" },
+        "nextRefillDate": { "type": "string" },
+        "status": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "createdDate": { "type": "string" }
+      },
+      "required": ["id", "customerName", "productName", "intervalDays", "status"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Verified patient review",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "location": { "type": "string" },
+        "rating": { "type": "number" },
+        "date": { "type": "string" },
+        "productName": { "type": "string" },
+        "title": { "type": "string" },
+        "comment": { "type": "string" },
+        "verifiedBuyer": { "type": "boolean" },
+        "helpfulCount": { "type": "number" }
+      },
+      "required": ["id", "name", "rating", "comment"]
+    },
+    "Cart": {
+      "title": "Cart",
+      "description": "Active shopping cart session",
+      "type": "object",
+      "properties": {
+        "items": { "type": "array" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["items"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Discount voucher code",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "discountPercent": { "type": "number" },
+        "description": { "type": "string" },
+        "minSpend": { "type": "number" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["code", "discountPercent", "description"]
+    },
+    "Consultation": {
+      "title": "Consultation",
+      "description": "Digital triage message log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "sender": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "sender", "text", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of all UK pharmaceutical products"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of patient medicine orders"
+    },
+    "/autoRefills/{refillId}": {
+      "schema": "AutoRefill",
+      "description": "Scheduled auto-refill subscriptions"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Verified patient dispensary reviews"
+    },
+    "/carts/{cartId}": {
+      "schema": "Cart",
+      "description": "Live cloud synchronized cart sessions"
+    },
+    "/coupons/{couponId}": {
+      "schema": "Coupon",
+      "description": "Active promotional discount vouchers"
+    },
+    "/consultations/{sessionId}": {
+      "schema": "Consultation",
+      "description": "Digital triage & clinical interaction logs"
+    }
+  }
+}
