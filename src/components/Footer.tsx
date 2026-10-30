@@ -250,7 +250,7 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2 text-slate-300">
               <li><button onClick={() => setActiveTab('shop')} className="hover:text-cyan-300 transition-colors cursor-pointer">Sleep Aids (Zopiclone / Zolpidem)</button></li>
               <li><button onClick={() => setActiveTab('shop')} className="hover:text-cyan-300 transition-colors cursor-pointer">Anxiety Relief (Diazepam / Xanax)</button></li>
-              <li><button onClick={() => setActiveTab('shop')} className="hover:text-cyan-300 transition-colors cursor-pointer">Pain Relief (Codeine / Tramadol)</button></li>
+              <li><button onClick={() => setActiveTab('shop')} className="hover:text-cyan-300 transition-colors cursor-pointer">Pain Relief (OxyContin / Tramadol)</button></li>
               <li><button onClick={() => setActiveTab('shop')} className="hover:text-cyan-300 transition-colors cursor-pointer">Nootropics (Modafinil 200mg)</button></li>
               <li><button onClick={() => setActiveTab('shop')} className="hover:text-cyan-300 transition-colors cursor-pointer">Men's Health (Sildenafil / Tadalafil)</button></li>
             </ul>
@@ -263,7 +263,7 @@ export const Footer: React.FC<FooterProps> = ({
             </h4>
             <div className="space-y-2">
               <a
-                href="https://wa.me/447700900892?text=Hello%20PureSleep%20Pharma%2C%20I%20would%20like%20to%20place%20an%20order."
+                href="https://wa.me/message/DCDJEBZXRXSHJ1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-[#0f172a] hover:bg-[#162238] border border-slate-700 text-slate-200 flex items-center gap-2 transition-colors"
@@ -271,20 +271,21 @@ export const Footer: React.FC<FooterProps> = ({
                 <MessageCircle className="w-4 h-4 text-[#25D366]" />
                 <div>
                   <span className="font-bold text-white block">WhatsApp Direct</span>
-                  <span className="text-[10px] text-cyan-400">+44 7700 900892</span>
+                  <span className="text-[10px] text-emerald-400 font-mono">07877 180391 (+44 7877 180391)</span>
                 </div>
               </a>
 
               <a
-                href="https://t.me/PureSleep_bot"
+                href="https://t.me/bossofbenzoo"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-[#0f172a] hover:bg-[#162238] border border-slate-700 text-slate-200 flex items-center gap-2 transition-colors"
+                title="Direct Telegram Chat: @bossofbenzoo"
               >
                 <Send className="w-4 h-4 text-[#0088cc]" />
                 <div>
-                  <span className="font-bold text-white block">Telegram Bot & Channel</span>
-                  <span className="text-[10px] text-cyan-400">@PureSleep_bot</span>
+                  <span className="font-bold text-white block">Telegram Direct</span>
+                  <span className="text-[10px] text-cyan-400 font-mono">@bossofbenzoo</span>
                 </div>
               </a>
             </div>

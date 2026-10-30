@@ -618,7 +618,7 @@ app.post("/api/chat/support", async (req, res) => {
 
     const systemInstruction = `You are the Lead Clinical Support Specialist and Senior Dispensing Pharmacist at PureSleep Pharma (UK).
 PureSleep Pharma is the premier UK online pharmacy specializing in:
-- Diazepam (Sedil 5mg, Easium 10mg, Elipam 10mg)
+- Diazepam (Sedil 5mg, Esium Diaz 5mg, Bensedin 10mg)
 - Clonazepam (Pase 2mg, Rivotril 2mg)
 - Nitrazepam (Nitraz 5mg, Nitraz 10mg)
 - Alprazolam (Xanax 0.5mg, Alprax 1mg, Alprax 2mg)
@@ -639,7 +639,7 @@ Key facts about PureSleep Pharma:
 - Payment Methods: Instant UK Fast Bank Transfer (Faster Payments), Cryptocurrency (Bitcoin/USDT/ETH), Debit/Credit Card, and Cash on Delivery.
 - Multi-pack volume savings (up to 40% off on 56/112/240 tablet packs).
 - Auto-Refill & Save option gives an extra 10% discount on 30, 60, or 90-day intervals.
-- Customer support channels: Live Chat, WhatsApp (+44 7700 900892), and Telegram (@PureSleep_bot).
+- Customer support channels: Live Chat, WhatsApp (07877 180391 / +44 7877 180391 / https://wa.me/message/DCDJEBZXRXSHJ1), and Telegram (@bossofbenzoo / https://t.me/bossofbenzoo).
 
 Tone: Friendly, authoritative, discreet, British healthcare English, reassuring, and helpful. Always provide concise, crystal clear guidance.`;
 
@@ -673,8 +673,8 @@ Tone: Friendly, authoritative, discreet, British healthcare English, reassuring,
     console.error("Support chat error:", error);
     res.status(500).json({
       error: "Support chat unavailable",
-      reply: "We are currently experiencing high volume. You can order directly or message our on-duty team on WhatsApp (+44 7700 900892) for immediate assistance!",
-      quickReplies: ["Order via WhatsApp", "View Sleep Aids", "Track Order"]
+      reply: "We are currently experiencing high volume. You can order directly or message our on-duty team on WhatsApp (07877 180391 / https://wa.me/message/DCDJEBZXRXSHJ1) or Telegram (@bossofbenzoo) for immediate assistance!",
+      quickReplies: ["Order via WhatsApp", "Telegram: @bossofbenzoo", "View Sleep Aids", "Track Order"]
     });
   }
 });

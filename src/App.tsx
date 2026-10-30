@@ -52,6 +52,7 @@ import {
   Sparkles,
   ShoppingBag,
   MessageCircle,
+  Send,
   Truck
 } from 'lucide-react';
 
@@ -139,7 +140,7 @@ export function App() {
     handleUrlRouting();
     window.addEventListener('popstate', handleUrlRouting);
     return () => window.removeEventListener('popstate', handleUrlRouting);
-  }, []);
+  }, [products]);
 
   // Synchronize URL query params with state changes without reloading page
   useEffect(() => {
@@ -216,6 +217,7 @@ export function App() {
 
   // Cart Handlers
   const handleAddToCart = (product: MedicineProduct, selectedPack: ProductPackOption, quantity: number) => {
+    if (!product.inStock) return;
     setCartItems(prev => {
       const itemId = `cart-${product.id}-${selectedPack.id}`;
       const existingIndex = prev.findIndex(item => item.id === itemId);
@@ -308,7 +310,7 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+    <div className="min-h-screen bg-[#101827] text-white flex flex-col selection:bg-[#2563EB] selection:text-white">
       
       {/* 1. Master Navigation Header */}
       <Header
@@ -360,17 +362,17 @@ export function App() {
             />
 
             {/* Dispensary Treatments Catalog Section */}
-            <section id="treatments-section" className="py-10 bg-[#0b0f19]">
+            <section id="treatments-section" className="py-10 bg-[#101827]">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
                 
                 {/* Catalog Controls Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-cyan-400 uppercase tracking-widest">
+                      <span className="text-xs font-semibold text-[#60A5FA] uppercase tracking-widest">
                         Online Dispensary
                       </span>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-900 text-cyan-300 border border-slate-700">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#172339] text-[#60A5FA] border border-[#60A5FA]/30">
                         {filteredProducts.length} treatments found
                       </span>
                     </div>
@@ -381,18 +383,18 @@ export function App() {
 
                   {/* Filter & Sort Bar */}
                   <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-[#0f172a] border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-300">
-                      <ArrowUpDown className="w-3.5 h-3.5 text-cyan-400" />
+                    <div className="flex items-center gap-2 bg-[#172339] border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-slate-300">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-[#60A5FA]" />
                       <span className="text-slate-400 font-medium">Sort by:</span>
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
                         className="bg-transparent text-white font-semibold focus:outline-none cursor-pointer"
                       >
-                        <option value="featured" className="bg-[#0f172a]">Featured & Best Sellers</option>
-                        <option value="rating" className="bg-[#0f172a]">Highest Rated (4.9+)</option>
-                        <option value="price-low" className="bg-[#0f172a]">Price: Low to High</option>
-                        <option value="price-high" className="bg-[#0f172a]">Price: High to Low</option>
+                        <option value="featured" className="bg-[#101827]">Featured & Best Sellers</option>
+                        <option value="rating" className="bg-[#101827]">Highest Rated (4.9+)</option>
+                        <option value="price-low" className="bg-[#101827]">Price: Low to High</option>
+                        <option value="price-high" className="bg-[#101827]">Price: High to Low</option>
                       </select>
                     </div>
 
@@ -415,8 +417,8 @@ export function App() {
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
                         selectedCategory === cat
-                          ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md font-bold'
-                          : 'bg-[#0f172a] text-slate-300 border-slate-800 hover:border-cyan-500/50 hover:text-white'
+                          ? 'bg-[#2563EB] text-white border-[#60A5FA] shadow-md shadow-blue-900/40 font-bold'
+                          : 'bg-[#172339] text-slate-300 border-slate-700/80 hover:border-[#60A5FA]/50 hover:text-white'
                       }`}
                     >
                       {cat}
@@ -426,15 +428,15 @@ export function App() {
 
                 {/* Product Cards Grid */}
                 {filteredProducts.length === 0 ? (
-                  <div className="py-16 text-center bg-[#0f172a] rounded-2xl border border-slate-800 space-y-3">
-                    <Pill className="w-12 h-12 text-slate-600 mx-auto" />
+                  <div className="py-16 text-center bg-[#172339] rounded-2xl border border-slate-800 space-y-3">
+                    <Pill className="w-12 h-12 text-slate-500 mx-auto" />
                     <h3 className="text-base font-bold text-white">No medications match your search</h3>
                     <p className="text-xs text-slate-400 max-w-sm mx-auto">
                       Try searching for generic terms like "Zopiclone", "Diazepam", "Modafinil", or "Sleep".
                     </p>
                     <button
                       onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
-                      className="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-bold hover:bg-cyan-400"
+                      className="px-4 py-2 rounded-xl bg-[#2563EB] text-white text-xs font-bold hover:bg-blue-600 transition-colors"
                     >
                       Reset All Filters
                     </button>
@@ -505,7 +507,7 @@ export function App() {
         )}
 
         {/* FAQ & Support Section */}
-        {activeTab === 'support' && (
+        {(activeTab === 'support' || activeTab === 'faq') && (
           <div className="py-6">
             <FAQSection />
           </div>
@@ -521,6 +523,7 @@ export function App() {
                 if (p && p.length > 0) setProducts(p);
               });
             }}
+            onBackToStore={() => setActiveTab('shop')}
           />
         )}
       </main>
@@ -571,6 +574,46 @@ export function App() {
 
       {/* 4. Master Footer */}
       <Footer setActiveTab={setActiveTab} />
+
+      {/* 5. Floating Quick Contact Channels (WhatsApp + Telegram) */}
+      <aside aria-label="Quick contact channels" className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2">
+        <a
+          id="floating-telegram-btn"
+          href="https://t.me/bossofbenzoo"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Direct Telegram Chat: @bossofbenzoo"
+          className="flex items-center gap-2 px-3 py-2 rounded-full bg-[#072635]/95 backdrop-blur-sm hover:bg-[#0b384f] border border-cyan-500/60 shadow-xl text-white font-semibold text-xs transition-all duration-200 group"
+        >
+          <div className="w-6 h-6 rounded-full bg-[#0088cc] flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform shadow-sm">
+            <Send className="w-3.5 h-3.5" />
+          </div>
+          <div className="flex flex-col text-left leading-tight pr-1">
+            <span className="text-[9px] text-cyan-300 font-medium">Telegram Direct</span>
+            <span className="font-bold text-white text-[11px] font-mono">@bossofbenzoo</span>
+          </div>
+        </a>
+
+        <a
+          id="floating-whatsapp-btn"
+          href="https://wa.me/message/DCDJEBZXRXSHJ1"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Chat with Pharmacist on WhatsApp: 07877 180391"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-[#073623]/95 backdrop-blur-sm hover:bg-[#0a4b31] border border-emerald-500/60 shadow-2xl hover:shadow-emerald-500/25 text-white font-semibold text-xs transition-all duration-200 group"
+        >
+          <div className="w-7 h-7 rounded-full bg-[#25D366] flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform shadow-md">
+            <MessageCircle className="w-4 h-4 fill-white" />
+          </div>
+          <div className="flex flex-col text-left leading-tight pr-1">
+            <span className="text-[10px] text-emerald-300 flex items-center gap-1 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              WhatsApp Online
+            </span>
+            <span className="font-bold text-white text-xs font-mono">07877 180391</span>
+          </div>
+        </a>
+      </aside>
 
     </div>
   );

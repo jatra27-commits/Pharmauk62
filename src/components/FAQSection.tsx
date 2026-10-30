@@ -8,19 +8,24 @@ import {
   ShieldCheck, 
   Sparkles, 
   CheckCircle2, 
-  Tag
+  Tag,
+  MessageCircle,
+  Phone,
+  Send
 } from 'lucide-react';
 import { FREQUENTLY_ASKED_QUESTIONS } from '../data/medicineCatalog';
+import { addSubscriberToFirestore } from '../lib/firestoreService';
 
 export const FAQSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setSubscribed(true);
+    await addSubscriberToFirestore(email, 'FAQ Newsletter Voucher');
   };
 
   return (
@@ -76,6 +81,55 @@ export const FAQSection: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Instant Pharmacist Help & WhatsApp Direct Card */}
+        <div className="bg-[#031d14] border border-emerald-500/50 rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center text-[#25D366] shrink-0">
+              <MessageCircle className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-white">
+                  Have Questions or Prefer Ordering Directly?
+                </h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                  Online
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-emerald-300/80 mt-1">
+                Reach our on-duty UK dispensary team on WhatsApp at <strong className="text-white font-mono">07877 180391</strong> or Telegram <strong className="text-cyan-300 font-mono">@bossofbenzoo</strong>. We confirm stock, handle custom orders, and verify Bank Transfer/Crypto payments in real time.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+            <a
+              href="https://wa.me/message/DCDJEBZXRXSHJ1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <MessageCircle className="w-4 h-4 text-white" />
+              <span>WhatsApp: 07877 180391</span>
+            </a>
+            <a
+              href="https://t.me/bossofbenzoo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#0088cc]/20 hover:bg-[#0088cc]/30 border border-[#0088cc]/50 text-cyan-200 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            >
+              <Send className="w-4 h-4 text-[#0088cc]" />
+              <span>Telegram: @bossofbenzoo</span>
+            </a>
+            <a
+              href="tel:07877180391"
+              className="w-full sm:w-auto px-3.5 py-2.5 rounded-xl bg-[#021811] hover:bg-[#05261c] border border-emerald-700/60 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Call</span>
+            </a>
+          </div>
         </div>
 
         {/* Newsletter / Instant 15% Discount Incentive */}

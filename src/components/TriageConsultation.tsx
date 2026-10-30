@@ -86,16 +86,22 @@ export const TriageConsultation: React.FC<TriageConsultationProps> = ({
       // Check if text matches any product in catalog for recommended product attachment
       const lower = textToSend.toLowerCase();
       let matchedProductId: string | undefined;
-      if (lower.includes('sleep') || lower.includes('insomnia') || lower.includes('zopiclone') || lower.includes('wake up')) {
-        matchedProductId = 'zopiclone-7-5mg';
+      if (lower.includes('nitraz 10') || lower.includes('nitrazepam 10') || lower.includes('nitraz 10mg')) {
+        matchedProductId = 'rem-nitraz-10';
+      } else if (lower.includes('nitraz') || lower.includes('nitrazepam') || lower.includes('mogadon')) {
+        matchedProductId = 'rem-nitraz-5';
+      } else if (lower.includes('bromazepam') || lower.includes('lexotan')) {
+        matchedProductId = 'rem-bromazepam-3';
+      } else if (lower.includes('lorazepam') || lower.includes('ativan') || lower.includes('loraz')) {
+        matchedProductId = 'rem-loraz-2';
+      } else if (lower.includes('sleep') || lower.includes('insomnia') || lower.includes('zopiclone') || lower.includes('wake up')) {
+        matchedProductId = 'rem-zopiclone-75';
       } else if (lower.includes('anxiety') || lower.includes('panic') || lower.includes('stress') || lower.includes('diazepam') || lower.includes('valium')) {
-        matchedProductId = 'diazepam-10mg';
-      } else if (lower.includes('pain') || lower.includes('back') || lower.includes('codeine') || lower.includes('tramadol')) {
-        matchedProductId = 'codeine-phosphate-30mg';
-      } else if (lower.includes('focus') || lower.includes('modafinil') || lower.includes('fatigue') || lower.includes('shift')) {
-        matchedProductId = 'modafinil-200mg';
-      } else if (lower.includes('erectile') || lower.includes('viagra') || lower.includes('sildenafil') || lower.includes('tadalafil') || lower.includes('cialis')) {
-        matchedProductId = 'sildenafil-100mg';
+        matchedProductId = 'rem-sedil-diazepam';
+      } else if (lower.includes('pain') || lower.includes('back') || lower.includes('oxycontin') || lower.includes('oxycodone') || lower.includes('tramadol')) {
+        matchedProductId = 'rem-oxycontin-80';
+      } else if (lower.includes('focus') || lower.includes('modafinil') || lower.includes('ritalin') || lower.includes('fatigue') || lower.includes('shift')) {
+        matchedProductId = 'rem-modafinil-200';
       }
 
       const pharmacistMsg: TriageMessage = {
@@ -114,9 +120,9 @@ export const TriageConsultation: React.FC<TriageConsultationProps> = ({
       const fallbackMsg: TriageMessage = {
         id: `ph-${Date.now()}`,
         sender: 'pharmacist',
-        text: "Thank you for explaining your symptoms. For acute sleep disruptions or severe anxiety, our licensed UK dispensary supplies genuine Zopiclone 7.5mg, Zolpidem 10mg, and Diazepam 10mg blister packs with discreet next-day Royal Mail Tracked 24 delivery.",
+        text: "Thank you for explaining your symptoms. For acute sleep disruptions or severe anxiety, our licensed UK dispensary supplies genuine Zopiclone 7.5mg, Zolpidem 10mg, and Diazepam blister packs with discreet next-day Royal Mail Tracked 24 delivery.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        recommendedProductId: 'zopiclone-7-5mg'
+        recommendedProductId: 'rem-zopiclone-75'
       };
       setMessages(prev => [...prev, fallbackMsg]);
       saveConsultationMessage(sessionId, fallbackMsg);
@@ -195,13 +201,25 @@ export const TriageConsultation: React.FC<TriageConsultationProps> = ({
             </div>
 
             <a
-              href="https://wa.me/447700900892?text=Hello%20Dr.%20Vance%2C%20I%20would%20like%20a%20clinical%20consultation."
+              href="https://wa.me/447877180391?text=Hello%20Dr.%20Vance%2C%20I%20would%20like%20a%20clinical%20consultation."
               target="_blank"
               rel="noopener noreferrer"
+              title="WhatsApp Consultation: 07877 180391"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#05251a] hover:bg-[#073826] border border-emerald-700/60 text-emerald-300 text-xs font-semibold"
             >
               <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-              <span>WhatsApp Direct</span>
+              <span>WhatsApp (07877 180391)</span>
+            </a>
+
+            <a
+              href="https://t.me/bossofbenzoo"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Telegram Consultation: @bossofbenzoo"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#032030] hover:bg-[#053048] border border-cyan-700/60 text-cyan-300 text-xs font-semibold"
+            >
+              <Send className="w-3.5 h-3.5 text-[#0088cc]" />
+              <span>Telegram (@bossofbenzoo)</span>
             </a>
           </div>
 

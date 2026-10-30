@@ -33,7 +33,7 @@ export const BNFInteractionChecker: React.FC = () => {
 
   const availableMedicines = [
     'Sedil 5mg (Diazepam)',
-    'Easium 10mg (Diazepam)',
+    'Esium Diaz 5mg (Diazepam)',
     'Elipam 10mg (Diazepam)',
     'Pase 2mg (Clonazepam)',
     'Rivotril 2mg (Clonazepam)',
@@ -48,6 +48,7 @@ export const BNFInteractionChecker: React.FC = () => {
     'Zolpidem 10mg',
     'Pregabalin 300mg / 450mg',
     'Modafinil 200mg',
+    'OxyContin 80mg (Oxycodone)',
     'Tramadol HCl 100mg',
     'Pain O Soma (Carisoprodol 350mg/500mg)',
     'Ritalin 10mg (Methylphenidate)',
@@ -97,7 +98,7 @@ export const BNFInteractionChecker: React.FC = () => {
       const simulated: InteractionResult[] = [];
       const hasZopiclone = selectedDrugs.some(d => d.includes('Zopiclone') || d.includes('Zolpidem'));
       const hasBenzos = selectedDrugs.some(d => d.includes('Diazepam') || d.includes('Alprazolam'));
-      const hasOpioids = selectedDrugs.some(d => d.includes('Codeine') || d.includes('Tramadol') || d.includes('Co-Codamol'));
+      const hasOpioids = selectedDrugs.some(d => d.includes('Codeine') || d.includes('Tramadol') || d.includes('Co-Codamol') || d.includes('OxyContin') || d.includes('Oxycodone'));
       const hasModafinil = selectedDrugs.some(d => d.includes('Modafinil') || d.includes('Armodafinil'));
 
       if (hasZopiclone && hasBenzos) {

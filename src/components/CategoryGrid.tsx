@@ -33,13 +33,13 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
     {
       name: 'Anxiety & Calm',
       icon: <HeartHandshake className="w-5 h-5" />,
-      description: 'Diazepam (Sedil, Easium, Elipam), Clonazepam, Xanax, Lorazepam & Pregabalin',
+      description: 'Diazepam (Sedil, Esium Diaz, Elipam, Bensedin), Clonazepam, Xanax, Lorazepam & Pregabalin',
       popular: true
     },
     {
       name: 'Pain Relief',
       icon: <Activity className="w-5 h-5" />,
-      description: 'Tramadol 100mg & Pain O Soma (Carisoprodol 350mg/500mg)',
+      description: 'OxyContin 80mg, Tramadol 100mg & Pain O Soma (Carisoprodol 350mg/500mg)',
       popular: true
     },
     {

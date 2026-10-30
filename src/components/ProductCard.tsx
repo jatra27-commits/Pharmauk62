@@ -26,16 +26,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onQuickView
 }) => {
-  // Default selected pack is the popular one or the second pack option
-  const initialPack = product.packOptions.find(p => p.popular) || product.packOptions[0];
-  const [selectedPack, setSelectedPack] = useState<ProductPackOption>(initialPack);
+  const defaultPack = product.packOptions?.find(p => p.popular) || product.packOptions?.[0];
+  const [selectedPack, setSelectedPack] = useState<ProductPackOption>(defaultPack);
   const [isAdded, setIsAdded] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
+  React.useEffect(() => {
+    if (product?.packOptions?.length) {
+      const match = product.packOptions.find(p => p.id === selectedPack?.id) || 
+                    product.packOptions.find(p => p.popular) || 
+                    product.packOptions[0];
+      setSelectedPack(match);
+    }
+  }, [product]);
+
+  const activePack = selectedPack || defaultPack;
+
   const handleAdd = () => {
-    onAddToCart(product, selectedPack, 1);
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1800);
+    if (activePack) {
+      onAddToCart(product, activePack, 1);
+      setIsAdded(true);
+      setTimeout(() => setIsAdded(false), 1800);
+    }
   };
 
   const handleShare = (e: React.MouseEvent) => {
@@ -51,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Hello PureSleep Pharma, I would like to order:\n- ${product.name} (${selectedPack.label})\n- Price: £${selectedPack.price.toFixed(2)}\n\nPlease provide payment and next-day delivery details.`
+    `Hello PureSleep Pharma, I would like to order:\n- ${product.name} (${activePack?.label || 'Pack'})\n- Price: £${(activePack?.price || 0).toFixed(2)}\n\nPlease provide payment and next-day delivery details.`
   );
 
   return (
@@ -74,12 +86,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           <div className="flex items-center gap-1">
-            {product.badge && (
+            {!product.inStock ? (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1">
+                Out of Stock
+              </span>
+            ) : product.badge ? (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-400/15 text-cyan-300 border border-cyan-400/30 flex items-center gap-1">
                 <Sparkles className="w-2.5 h-2.5" />
                 {product.badge}
               </span>
-            )}
+            ) : null}
             <button
               onClick={handleShare}
               className="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-colors cursor-pointer text-[10px] flex items-center gap-0.5"
@@ -97,20 +113,44 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Visual Icon & Image Thumbnail */}
         <div 
           onClick={() => onQuickView(product)}
-          className="w-full h-32 rounded-xl bg-gradient-to-br from-[#111c30] to-[#0b0f19] border border-slate-800 flex flex-col items-center justify-center p-3 relative overflow-hidden group-hover:border-cyan-500/40 transition-colors cursor-pointer"
+          className="w-full h-36 rounded-xl bg-gradient-to-br from-[#111c30] to-[#0b0f19] border border-slate-800 flex flex-col items-center justify-center p-3 relative overflow-hidden group-hover:border-cyan-500/40 transition-colors cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-cyan-950/50 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-            <Pill className="w-6 h-6" />
-          </div>
-          <span className="text-[11px] font-semibold text-slate-300 mt-2">
-            {product.format} • {product.activeIngredient}
-          </span>
-          <span className="text-[10px] text-cyan-400 flex items-center gap-1 mt-0.5">
-            <Truck className="w-3 h-3" /> Next-Day Royal Mail 24
-          </span>
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-200"
+              onError={(e) => {
+                // If image fails to load, hide image element
+                (e.currentTarget as HTMLElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <>
+              <div className="w-12 h-12 rounded-full bg-cyan-950/50 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                <Pill className="w-6 h-6" />
+              </div>
+              <span className="text-[11px] font-semibold text-slate-300 mt-2">
+                {product.format} • {product.activeIngredient}
+              </span>
+              <span className="text-[10px] text-cyan-400 flex items-center gap-1 mt-0.5">
+                <Truck className="w-3 h-3" /> Next-Day Royal Mail 24
+              </span>
+            </>
+          )}
+
+          {/* Out of Stock Overlay */}
+          {!product.inStock && (
+            <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] flex items-center justify-center z-10">
+              <span className="px-3 py-1 rounded-lg bg-rose-950/90 border border-rose-500/60 text-rose-300 text-xs font-extrabold uppercase tracking-wider shadow-lg">
+                Out of Stock
+              </span>
+            </div>
+          )}
 
           {/* Quick View Button Overlay */}
-          <div className="absolute inset-0 bg-[#0b0f19]/80 backdrop-blur-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute inset-0 bg-[#0b0f19]/80 backdrop-blur-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
             <span className="px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 text-xs font-bold flex items-center gap-1 shadow">
               <Eye className="w-3.5 h-3.5" /> Quick View & Info
             </span>
@@ -154,7 +194,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-1.5">
             {product.packOptions.map((pack) => {
-              const isSelected = selectedPack.id === pack.id;
+              const isSelected = activePack?.id === pack.id;
               const stripLabel = pack.id === 'sedil-500box'
                 ? '1 Box (500 Pcs)'
                 : (pack.stripsCount 
@@ -176,8 +216,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <span className="text-[9px] text-slate-400">{pack.tabletsCount} Units</span>
-                    {pack.freeDelivery ? (
-                      <span className="text-[9px] text-cyan-300 font-bold bg-cyan-950 px-1 rounded border border-cyan-600/40">
+                    {pack.bonusLabel ? (
+                      <span className="text-[9px] text-fuchsia-300 font-bold">
+                        {pack.bonusLabel}
+                      </span>
+                    ) : pack.freeDelivery ? (
+                      <span className="text-[9px] text-emerald-400 font-bold">
                         Free Del
                       </span>
                     ) : pack.discountPercentage && pack.discountPercentage > 0 ? (
@@ -214,22 +258,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
 
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-900 text-cyan-300 border border-slate-700 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> In Stock
-          </span>
+          {product.inStock ? (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-900 text-cyan-300 border border-slate-700 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> In Stock
+            </span>
+          ) : (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/60 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Out of Stock
+            </span>
+          )}
         </div>
 
         {/* Action Buttons */}
         <div className="grid grid-cols-5 gap-2">
           <button
-            onClick={handleAdd}
-            className={`col-span-4 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer ${
-              isAdded
-                ? 'bg-teal-500 text-slate-950 font-bold'
-                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold'
+            onClick={product.inStock ? handleAdd : undefined}
+            disabled={!product.inStock}
+            className={`col-span-4 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md ${
+              !product.inStock
+                ? 'bg-slate-800/80 text-slate-400 border border-slate-700 cursor-not-allowed'
+                : isAdded
+                ? 'bg-teal-500 text-slate-950 font-bold cursor-pointer'
+                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold cursor-pointer'
             }`}
           >
-            {isAdded ? (
+            {!product.inStock ? (
+              <>Out of Stock</>
+            ) : isAdded ? (
               <>
                 <Check className="w-4 h-4" /> Added to Basket
               </>
@@ -241,11 +296,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </button>
 
           <a
-            href={`https://wa.me/447700900892?text=${whatsappMessage}`}
+            href={`https://wa.me/447877180391?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            title="Fast Order via WhatsApp"
-            className="col-span-1 p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            title="Fast Order via WhatsApp: 07877 180391"
+            className="col-span-1 p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-emerald-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <MessageCircle className="w-4 h-4" />
           </a>

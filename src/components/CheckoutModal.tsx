@@ -14,7 +14,8 @@ import {
   FileText,
   MessageCircle,
   Copy,
-  Check
+  Check,
+  Send
 } from 'lucide-react';
 import { CartItem, CouponDiscount, OrderRecord, PaymentMethodType } from '../types';
 import { createOrderInFirestore } from '../lib/firestoreService';
@@ -83,20 +84,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       : appliedCoupon.value;
   }
 
-  // Royal Mail Shipping Fee £12.00 (or FREE if eligible bulk pack or Free Delivery product selected)
-  const hasFreeDelivery = safeCartItems.some(
-    i => Boolean(
-      i?.selectedPack?.freeDelivery || 
-      i?.selectedPack?.id === 'sedil-500box' ||
-      i?.product?.id === 'rem-zopiclone-75' ||
-      i?.product?.id === 'rem-zopi-10' ||
-      i?.product?.id === 'rem-zopiclone-20' ||
-      i?.product?.id === 'rem-ritalin-10' ||
-      i?.product?.name?.toLowerCase().includes('zopiclone') ||
-      i?.product?.name?.toLowerCase().includes('ritalin')
-    )
-  );
-  const shippingFee = hasFreeDelivery ? 0.00 : 12.00;
+  // Royal Mail Shipping Fee £12.00 flat rate for express next-day delivery, or FREE if any item includes free delivery
+  const hasFreeDelivery = safeCartItems.some(i => i?.selectedPack?.freeDelivery);
+  const shippingFee = hasFreeDelivery ? 0 : 12.00;
 
   const totalDiscount = autoRefillDiscount + loyaltyDiscount + couponDiscountAmount;
   const finalTotal = Math.max(0, rawSubtotal - totalDiscount + shippingFee);
@@ -230,7 +220,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="e.g. 07700 900821"
+                    placeholder="e.g. 07877 180391"
                     className="w-full bg-[#111c30] border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
                   />
                 </div>
@@ -357,10 +347,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
                 <div className="text-right shrink-0 ml-3">
                   <span className="text-base font-extrabold text-cyan-400 font-mono">
-                    {hasFreeDelivery ? "FREE" : `£${shippingFee.toFixed(2)}`}
+                    {shippingFee === 0 ? 'FREE' : `£${shippingFee.toFixed(2)}`}
                   </span>
                   <p className="text-[10px] text-slate-400">
-                    {hasFreeDelivery ? "Bulk Special" : "Flat rate"}
+                    {shippingFee === 0 ? 'Included' : 'Flat rate'}
                   </p>
                 </div>
               </label>
@@ -462,8 +452,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="p-3.5 rounded-xl bg-[#0b0f19] border border-slate-800 space-y-1.5 text-xs">
               <div className="flex justify-between text-slate-400">
                 <span>Shipping (Royal Mail Tracked 24):</span>
-                <span className={hasFreeDelivery ? "text-cyan-300 font-bold" : "text-white font-semibold"}>
-                  {hasFreeDelivery ? "FREE" : `£${shippingFee.toFixed(2)}`}
+                <span className={`font-semibold font-mono ${shippingFee === 0 ? 'text-emerald-400' : 'text-white'}`}>
+                  {shippingFee === 0 ? 'FREE' : `£${shippingFee.toFixed(2)}`}
                 </span>
               </div>
               <div className="flex items-center justify-between border-t border-slate-800 pt-2">
@@ -645,13 +635,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </button>
 
               <a
-                href={`https://wa.me/447700900892?text=Hello%20PureSleep%20Pharma%2C%20I%20have%20completed%20Order%20${completedOrder.id}%20for%20%C2%A3${completedOrder.total.toFixed(2)}.%20Please%20confirm%20dispatch.`}
+                href={`https://wa.me/447877180391?text=Hello%20PureSleep%20Pharma%2C%20I%20have%20completed%20Order%20${completedOrder.id}%20for%20%C2%A3${completedOrder.total.toFixed(2)}.%20Please%20confirm%20dispatch.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors"
               >
                 <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                <span>Confirm Payment via WhatsApp (+44 7700 900892)</span>
+                <span>Confirm Payment via WhatsApp (07877 180391)</span>
+              </a>
+
+              <a
+                href="https://t.me/bossofbenzoo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-cyan-300 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+              >
+                <Send className="w-4 h-4 text-[#0088cc]" />
+                <span>Confirm Payment on Telegram (@bossofbenzoo)</span>
               </a>
 
               <button

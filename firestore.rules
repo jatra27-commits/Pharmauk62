@@ -36,6 +36,31 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
+    // Medicine Categories
+    match /categories/{categoryId} {
+      allow read, write: if true;
+    }
+
+    // Promotional Banners
+    match /banners/{bannerId} {
+      allow read, write: if true;
+    }
+
+    // Frequently Asked Questions
+    match /faqs/{faqId} {
+      allow read, write: if true;
+    }
+
+    // Email Subscribers
+    match /subscribers/{subscriberId} {
+      allow read, write: if true;
+    }
+
+    // Admin Activity Audit Logs
+    match /auditLogs/{logId} {
+      allow read, write: if true;
+    }
+
     // Triage & Consultation sessions
     match /consultations/{sessionId}/{document=**} {
       allow read, write: if true;

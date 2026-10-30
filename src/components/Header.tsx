@@ -17,7 +17,9 @@ import {
   Award,
   Type,
   Check,
-  Sliders
+  Sliders,
+  MessageCircle,
+  Send
 } from 'lucide-react';
 import { NavigationTab, MedicineProduct, CartItem } from '../types';
 import { REST_EASY_PRODUCTS } from '../data/medicineCatalog';
@@ -158,17 +160,17 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#0b0f19]/95 backdrop-blur-md border-b border-slate-800/80">
+    <header className="sticky top-0 z-40 w-full bg-[#101827]/95 backdrop-blur-md border-b border-slate-800">
       {/* Top Notification / Trust Bar */}
-      <div className="bg-gradient-to-r from-slate-950 via-[#0d1527] to-slate-950 border-b border-slate-800/60 text-xs py-1.5 px-4 text-slate-300">
+      <div className="bg-[#101827] border-b border-slate-800 text-xs py-1.5 px-4 text-slate-300">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-4 text-xs font-medium">
-            <span className="flex items-center gap-1.5 text-cyan-200">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="flex items-center gap-1.5 text-[#60A5FA]">
+              <span className="w-2 h-2 rounded-full bg-[#60A5FA] animate-pulse"></span>
               🇬🇧 UK Royal Mail Tracked 24 • Next-Day Delivery
             </span>
             <span className="hidden md:inline-flex items-center gap-1 text-slate-400">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" /> 100% Discrete Plain Packaging Guaranteed
+              <ShieldCheck className="w-3.5 h-3.5 text-[#60A5FA]" /> 100% Discrete Plain Packaging Guaranteed
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -176,18 +178,18 @@ export const Header: React.FC<HeaderProps> = ({
             <div ref={textFormatRef} className="relative">
               <button 
                 onClick={() => setIsTextFormatOpen(!isTextFormatOpen)}
-                className="hover:text-cyan-200 text-slate-300 transition-colors flex items-center gap-1 cursor-pointer text-xs bg-slate-900/80 hover:bg-slate-800 px-2 py-0.5 rounded border border-slate-700/80"
+                className="hover:text-[#60A5FA] text-slate-300 transition-colors flex items-center gap-1 cursor-pointer text-xs bg-[#172339] hover:bg-slate-800 px-2 py-0.5 rounded border border-slate-700/80"
                 title="Customize Typography & Text Format"
               >
-                <Type className="w-3 h-3 text-cyan-400" />
+                <Type className="w-3 h-3 text-[#60A5FA]" />
                 <span className="font-semibold text-[11px]">Text Format</span>
               </button>
 
               {isTextFormatOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-[#0f172a] border border-slate-700 rounded-xl shadow-2xl p-3 z-50 text-xs space-y-3 text-slate-200">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-[#172339] border border-slate-700 rounded-xl shadow-2xl p-3 z-50 text-xs space-y-3 text-slate-200">
                   <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                     <span className="font-bold text-white flex items-center gap-1.5">
-                      <Type className="w-4 h-4 text-cyan-400" />
+                      <Type className="w-4 h-4 text-[#60A5FA]" />
                       Text & Font Format
                     </span>
                     <button
@@ -200,7 +202,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                   {/* Font Presets */}
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">
+                    <label className="text-[10px] uppercase font-bold text-[#60A5FA] tracking-wider">
                       Font Family Style
                     </label>
                     <div className="grid grid-cols-1 gap-1">
@@ -208,7 +210,7 @@ export const Header: React.FC<HeaderProps> = ({
                         onClick={() => setTextFormat('modern')}
                         className={`w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between transition-colors ${
                           textFormat === 'modern'
-                            ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400 font-bold'
+                            ? 'bg-blue-950/80 text-[#60A5FA] border border-[#60A5FA] font-bold'
                             : 'bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800'
                         }`}
                       >
@@ -216,14 +218,14 @@ export const Header: React.FC<HeaderProps> = ({
                           <p className="text-xs">✨ Modern Geometric</p>
                           <span className="text-[10px] text-slate-400 block font-normal">Outfit + Plus Jakarta Sans</span>
                         </div>
-                        {textFormat === 'modern' && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                        {textFormat === 'modern' && <Check className="w-3.5 h-3.5 text-[#60A5FA]" />}
                       </button>
 
                       <button
                         onClick={() => setTextFormat('clean')}
                         className={`w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between transition-colors ${
                           textFormat === 'clean'
-                            ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400 font-bold'
+                            ? 'bg-blue-950/80 text-[#60A5FA] border border-[#60A5FA] font-bold'
                             : 'bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800'
                         }`}
                       >
@@ -231,14 +233,14 @@ export const Header: React.FC<HeaderProps> = ({
                           <p className="text-xs">⚡ Minimalist Clean</p>
                           <span className="text-[10px] text-slate-400 block font-normal">Inter Clinical Standard</span>
                         </div>
-                        {textFormat === 'clean' && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                        {textFormat === 'clean' && <Check className="w-3.5 h-3.5 text-[#60A5FA]" />}
                       </button>
 
                       <button
                         onClick={() => setTextFormat('lexend')}
                         className={`w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between transition-colors ${
                           textFormat === 'lexend'
-                            ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400 font-bold'
+                            ? 'bg-blue-950/80 text-[#60A5FA] border border-[#60A5FA] font-bold'
                             : 'bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800'
                         }`}
                       >
@@ -246,14 +248,14 @@ export const Header: React.FC<HeaderProps> = ({
                           <p className="text-xs">📖 High Legibility</p>
                           <span className="text-[10px] text-slate-400 block font-normal">Lexend Reading Clarity</span>
                         </div>
-                        {textFormat === 'lexend' && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                        {textFormat === 'lexend' && <Check className="w-3.5 h-3.5 text-[#60A5FA]" />}
                       </button>
 
                       <button
                         onClick={() => setTextFormat('classic')}
                         className={`w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between transition-colors ${
                           textFormat === 'classic'
-                            ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400 font-bold'
+                            ? 'bg-blue-950/80 text-[#60A5FA] border border-[#60A5FA] font-bold'
                             : 'bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800'
                         }`}
                       >
@@ -318,12 +320,23 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <span className="text-slate-700">|</span>
             <a 
-              href="https://wa.me/447700900892?text=Hello%20PureSleep%20Pharma%2C%20I%20would%20like%20to%20order" 
+              href="https://wa.me/message/DCDJEBZXRXSHJ1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium flex items-center gap-1"
+              className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium flex items-center gap-1.5"
+              title="Chat on WhatsApp: 07877 180391"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> WhatsApp Order
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> WhatsApp: 07877 180391
+            </a>
+            <span className="text-slate-700 hidden sm:inline">|</span>
+            <a 
+              href="https://t.me/bossofbenzoo" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium hidden sm:flex items-center gap-1.5"
+              title="Chat on Telegram: @bossofbenzoo"
+            >
+              <Send className="w-3 h-3 text-[#0088cc]" /> Telegram: @bossofbenzoo
             </a>
           </div>
         </div>
@@ -409,9 +422,15 @@ export const Header: React.FC<HeaderProps> = ({
                           <p className="text-sm font-bold text-cyan-400">
                             from £{product.basePrice.toFixed(2)}
                           </p>
-                          <span className="text-[10px] text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
-                            In Stock
-                          </span>
+                          {product.inStock ? (
+                            <span className="text-[10px] text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
+                              In Stock
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-rose-300 bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-800/60">
+                              Out of Stock
+                            </span>
+                          )}
                         </div>
                       </button>
                     ))}
@@ -597,6 +616,36 @@ export const Header: React.FC<HeaderProps> = ({
             <HelpCircle className="w-4 h-4 text-cyan-400" />
             FAQ & Support
           </button>
+          <a
+            href="https://wa.me/message/DCDJEBZXRXSHJ1"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="w-full text-left px-3 py-2 rounded-lg text-emerald-300 bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-600/40 text-sm font-semibold flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <MessageCircle className="w-4 h-4 text-[#25D366]" />
+              <span>WhatsApp Us: 07877 180391</span>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+              Online
+            </span>
+          </a>
+          <a
+            href="https://t.me/bossofbenzoo"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="w-full text-left px-3 py-2 rounded-lg text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-600/40 text-sm font-semibold flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Send className="w-4 h-4 text-[#0088cc]" />
+              <span>Telegram: @bossofbenzoo</span>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono">
+              Direct
+            </span>
+          </a>
           <button
             onClick={() => { setActiveTab('admin'); setIsMobileMenuOpen(false); }}
             className="w-full text-left px-3 py-2 rounded-lg text-amber-300 bg-amber-950/40 border border-amber-600/30 text-sm font-medium"

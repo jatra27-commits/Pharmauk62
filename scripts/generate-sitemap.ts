@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-const SITE_URL = process.env.SITE_URL || 'https://resteasymeds.co.uk';
+const SITE_URL = process.env.SITE_URL || 'https://puresleeppharma.co.uk';
 
 export function writeSitemapFiles(): void {
   const { xml, entriesCount, productsCount, categoriesCount } = generateSitemapXML(SITE_URL);

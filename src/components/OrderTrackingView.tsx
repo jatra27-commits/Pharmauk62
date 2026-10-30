@@ -11,7 +11,8 @@ import {
   AlertCircle,
   ExternalLink,
   MessageCircle,
-  Pill
+  Pill,
+  Send
 } from 'lucide-react';
 import { OrderRecord } from '../types';
 import { getOrderByIdFromFirestore, getOrdersFromFirestore } from '../lib/firestoreService';
@@ -160,13 +161,25 @@ export const OrderTrackingView: React.FC<OrderTrackingViewProps> = ({
                 </button>
 
                 <a
-                  href={`https://wa.me/447700900892?text=Hello%20Rest%20Easy%20Meds%2C%20checking%20status%20for%20order%20${order.id}`}
+                  href={`https://wa.me/447877180391?text=Hello%20PureSleep%20Pharma%2C%20checking%20status%20for%20order%20${order.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3.5 py-2 rounded-xl bg-[#05251a] hover:bg-[#073826] border border-emerald-700/60 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  title="WhatsApp Pharmacist: 07877 180391"
                 >
                   <MessageCircle className="w-4 h-4 text-emerald-400" />
                   <span>WhatsApp Pharmacist</span>
+                </a>
+
+                <a
+                  href="https://t.me/bossofbenzoo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-[#032030] hover:bg-[#053048] border border-cyan-700/60 text-cyan-300 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  title="Telegram Support: @bossofbenzoo"
+                >
+                  <Send className="w-4 h-4 text-[#0088cc]" />
+                  <span>Telegram (@bossofbenzoo)</span>
                 </a>
               </div>
             </div>

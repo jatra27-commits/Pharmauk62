@@ -99,23 +99,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </button>
 
             <a
-              href="https://wa.me/447700900892?text=Hello%20PureSleep%20Pharma%2C%20I%20would%20like%20to%20place%20an%20order"
+              href="https://wa.me/message/DCDJEBZXRXSHJ1"
               target="_blank"
               rel="noopener noreferrer"
               className="px-5 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-emerald-300 border border-slate-700 font-semibold text-sm transition-all flex items-center gap-2 hover:text-white"
+              title="Order via WhatsApp: 07877 180391"
             >
               <MessageCircle className="w-4 h-4 text-[#25D366]" />
-              <span>Order on WhatsApp</span>
+              <span>WhatsApp: 07877 180391</span>
             </a>
 
             <a
-              href="https://t.me/PureSleep_bot"
+              href="https://t.me/bossofbenzoo"
               target="_blank"
               rel="noopener noreferrer"
               className="px-5 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-300 border border-slate-700 font-semibold text-sm transition-all flex items-center gap-2 hover:text-white"
+              title="Telegram: @bossofbenzoo"
             >
               <Send className="w-4 h-4 text-[#0088cc]" />
-              <span>Order on Telegram</span>
+              <span>Telegram: @bossofbenzoo</span>
             </a>
           </div>
 
@@ -203,23 +205,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto justify-center">
             <a
-              href="https://wa.me/447700900892?text=Hello%20PureSleep%20Pharma%2C%20I%20am%20interested%20in%20purchasing%20in%20bulk.%20Please%20provide%20your%20best%20bulk%20pricing."
+              href="https://wa.me/message/DCDJEBZXRXSHJ1"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2.5 rounded-xl bg-[#25D366]/20 hover:bg-[#25D366]/30 text-emerald-200 hover:text-white border border-[#25D366]/50 font-semibold text-xs transition-all flex items-center gap-2 shadow-sm"
+              title="WhatsApp Wholesale: 07877 180391"
             >
               <MessageCircle className="w-4 h-4 text-[#25D366]" />
-              <span>WhatsApp Us</span>
+              <span>WhatsApp (07877 180391)</span>
             </a>
 
             <a
-              href="https://t.me/PureSleep_bot"
+              href="https://t.me/bossofbenzoo"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2.5 rounded-xl bg-[#0088cc]/20 hover:bg-[#0088cc]/30 text-cyan-200 hover:text-white border border-[#0088cc]/50 font-semibold text-xs transition-all flex items-center gap-2 shadow-sm"
+              title="Telegram Wholesale: @bossofbenzoo"
             >
               <Send className="w-4 h-4 text-[#0088cc]" />
-              <span>Telegram Us</span>
+              <span>Telegram (@bossofbenzoo)</span>
             </a>
           </div>
         </div>

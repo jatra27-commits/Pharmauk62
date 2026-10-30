@@ -84,20 +84,9 @@ export const ShoppingCartDrawer: React.FC<ShoppingCartDrawerProps> = ({
     }
   }
 
-  // Royal Mail Tracked 24 Shipping (£12.00 or FREE with eligible bulk pack or Free Delivery products)
-  const hasFreeDelivery = safeCartItems.some(
-    i => Boolean(
-      i?.selectedPack?.freeDelivery || 
-      i?.selectedPack?.id === 'sedil-500box' ||
-      i?.product?.id === 'rem-zopiclone-75' ||
-      i?.product?.id === 'rem-zopi-10' ||
-      i?.product?.id === 'rem-zopiclone-20' ||
-      i?.product?.id === 'rem-ritalin-10' ||
-      i?.product?.name?.toLowerCase().includes('zopiclone') ||
-      i?.product?.name?.toLowerCase().includes('ritalin')
-    )
-  );
-  const shippingFee = hasFreeDelivery ? 0.00 : 12.00;
+  // Royal Mail Tracked 24 Shipping (£12.00 flat rate for next-day discreet delivery, or FREE if any item includes free delivery)
+  const hasFreeDelivery = safeCartItems.some(i => i?.selectedPack?.freeDelivery);
+  const shippingFee = hasFreeDelivery ? 0 : 12.00;
 
   const totalDiscount = autoRefillDiscount + loyaltyDiscount + couponDiscountAmount;
   const finalTotal = Math.max(0, rawSubtotal - totalDiscount + shippingFee);
@@ -131,7 +120,7 @@ export const ShoppingCartDrawer: React.FC<ShoppingCartDrawerProps> = ({
     (i, idx) => `${idx + 1}. ${i?.product?.name || 'Item'} - ${i?.selectedPack?.label || 'Pack'} (Qty: ${i?.quantity || 1}) - £${((i?.selectedPack?.price || 0) * (i?.quantity || 1)).toFixed(2)}${i?.isAutoRefill ? ' [Auto-Refill 30d]' : ''}`
   ).join('%0A');
 
-  const whatsappCheckoutUrl = `https://wa.me/447700900892?text=Hello%20PureSleep%20Pharma%2C%20I%20would%20like%20to%20place%20an%20order%20for%3A%0A%0A${formattedItemsText}%0A%0ASubtotal%3A%20%C2%A3${rawSubtotal.toFixed(2)}%0ADiscount%3A%20-%C2%A3${totalDiscount.toFixed(2)}%0AShipping%3A%20${hasFreeDelivery ? 'FREE' : '%C2%A312.00'}%0ATotal%3A%20%C2%A3${finalTotal.toFixed(2)}%0A%0APlease%20provide%20payment%20details%20for%20discreet%20next-day%20dispatch.`;
+  const whatsappCheckoutUrl = `https://wa.me/447877180391?text=Hello%20PureSleep%20Pharma%2C%20I%20would%20like%20to%20place%20an%20order%20for%3A%0A%0A${formattedItemsText}%0A%0ASubtotal%3A%20%C2%A3${rawSubtotal.toFixed(2)}%0ADiscount%3A%20-%C2%A3${totalDiscount.toFixed(2)}%0AShipping%3A%20%C2%A3${shippingFee.toFixed(2)}%0ATotal%3A%20%C2%A3${finalTotal.toFixed(2)}%0A%0APlease%20provide%20payment%20details%20for%20discreet%20next-day%20dispatch.`;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/75 backdrop-blur-xs flex justify-end">
@@ -165,15 +154,9 @@ export const ShoppingCartDrawer: React.FC<ShoppingCartDrawerProps> = ({
               <Truck className="w-3.5 h-3.5 text-cyan-400" />
               <span>Royal Mail Tracked 24 Express UK Delivery</span>
             </span>
-            {hasFreeDelivery ? (
-              <span className="text-[11px] text-cyan-300 font-extrabold bg-cyan-950 px-2 py-0.5 rounded border border-cyan-500/60 uppercase">
-                FREE Delivery
-              </span>
-            ) : (
-              <span className="text-[11px] text-slate-300 font-extrabold bg-slate-900 px-2 py-0.5 rounded border border-slate-700 font-mono">
-                £12.00
-              </span>
-            )}
+            <span className="text-[11px] text-slate-300 font-extrabold bg-slate-900 px-2 py-0.5 rounded border border-slate-700 font-mono">
+              £{shippingFee.toFixed(2)}
+            </span>
           </div>
         </div>
 
@@ -338,8 +321,8 @@ export const ShoppingCartDrawer: React.FC<ShoppingCartDrawerProps> = ({
 
               <div className="flex justify-between">
                 <span>Royal Mail Tracked 24 Delivery:</span>
-                <span className={shippingFee === 0 ? "text-cyan-300 font-bold" : "text-white font-semibold"}>
-                  {shippingFee === 0 ? "FREE" : `£${shippingFee.toFixed(2)}`}
+                <span className={`font-semibold font-mono ${shippingFee === 0 ? 'text-emerald-400' : 'text-white'}`}>
+                  {shippingFee === 0 ? 'FREE' : `£${shippingFee.toFixed(2)}`}
                 </span>
               </div>
 
@@ -364,20 +347,22 @@ export const ShoppingCartDrawer: React.FC<ShoppingCartDrawerProps> = ({
                   href={whatsappCheckoutUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="Direct WhatsApp Order: 07877 180391"
                   className="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-                  <span>Order on WhatsApp</span>
+                  <span>WhatsApp Order</span>
                 </a>
 
                 <a
-                  href="https://t.me/PureSleep_bot"
+                  href="https://t.me/bossofbenzoo"
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="Direct Telegram Chat: @bossofbenzoo"
                   className="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <Send className="w-3.5 h-3.5 text-[#0088cc]" />
-                  <span>Order on Telegram</span>
+                  <span>Telegram (@bossofbenzoo)</span>
                 </a>
               </div>
             </div>

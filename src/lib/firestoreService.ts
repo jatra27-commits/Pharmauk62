@@ -19,9 +19,16 @@ import {
   AutoRefillSubscription, 
   VerifiedCustomerReview,
   MedicineProduct,
-  CouponDiscount
+  CouponDiscount,
+  CategoryItem,
+  BannerItem,
+  FAQItem,
+  SubscriberRecord,
+  StoreSettings,
+  AuditLogEntry,
+  StaffMember
 } from '../types';
-import { REST_EASY_PRODUCTS, VERIFIED_REVIEWS, COUPON_CODES } from '../data/medicineCatalog';
+import { REST_EASY_PRODUCTS, VERIFIED_REVIEWS, COUPON_CODES, FREQUENTLY_ASKED_QUESTIONS } from '../data/medicineCatalog';
 
 // Firestore Collection Constants
 export const PRODUCTS_COLLECTION = 'products';
@@ -32,6 +39,12 @@ export const CART_COLLECTION = 'carts';
 export const COUPONS_COLLECTION = 'coupons';
 export const CONSULTATIONS_COLLECTION = 'consultations';
 export const SETTINGS_COLLECTION = 'settings';
+export const CATEGORIES_COLLECTION = 'categories';
+export const BANNERS_COLLECTION = 'banners';
+export const FAQS_COLLECTION = 'faqs';
+export const SUBSCRIBERS_COLLECTION = 'subscribers';
+export const AUDIT_LOGS_COLLECTION = 'auditLogs';
+export const STAFF_COLLECTION = 'staff';
 
 function sanitizeForFirestore<T>(data: T): T {
   return JSON.parse(JSON.stringify(data, (key, value) => {
@@ -591,6 +604,17 @@ export async function saveCouponToFirestore(coupon: CouponDiscount): Promise<voi
   }
 }
 
+export async function deleteCouponFromFirestore(code: string): Promise<boolean> {
+  try {
+    const ref = doc(db, COUPONS_COLLECTION, code);
+    await deleteDoc(ref);
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete coupon in Firestore:', err);
+    return false;
+  }
+}
+
 // ─────────────────────────────────────────────────────────────
 // 7. CLINICAL TRIAGE MESSAGES IN FIRESTORE
 // ─────────────────────────────────────────────────────────────
@@ -606,4 +630,470 @@ export async function saveConsultationMessage(sessionId: string, message: any): 
     console.error('[Firebase] Failed to save consultation message in Firestore:', err);
   }
 }
+
+export async function deleteReviewFromFirestore(id: string): Promise<boolean> {
+  try {
+    const ref = doc(db, REVIEWS_COLLECTION, id);
+    await deleteDoc(ref);
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete review from Firestore:', err);
+    return false;
+  }
+}
+
+export async function updateReviewInFirestore(id: string, updates: Partial<VerifiedCustomerReview>): Promise<boolean> {
+  try {
+    const ref = doc(db, REVIEWS_COLLECTION, id);
+    await updateDoc(ref, sanitizeForFirestore({
+      ...updates,
+      updatedAt: Date.now()
+    }));
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to update review in Firestore:', err);
+    return false;
+  }
+}
+
+export async function updateOrderInFirestore(id: string, updates: Partial<OrderRecord>): Promise<boolean> {
+  try {
+    const ref = doc(db, ORDERS_COLLECTION, id);
+    await updateDoc(ref, sanitizeForFirestore({
+      ...updates,
+      updatedAt: Date.now()
+    }));
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to update order in Firestore:', err);
+    return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 8. CATEGORIES IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export const DEFAULT_CATEGORIES: CategoryItem[] = [
+  { id: 'cat-sleep', name: 'Sleep Aids', slug: 'sleep-aids', description: 'Zopiclone (7.5mg, 10mg, 20mg), Zolpidem, Nitrazepam & Midazolam', active: true },
+  { id: 'cat-anxiety', name: 'Anxiety & Calm', slug: 'anxiety-calm', description: 'Diazepam, Clonazepam, Xanax, Lorazepam & Pregabalin', active: true },
+  { id: 'cat-pain', name: 'Pain Relief', slug: 'pain-relief', description: 'OxyContin 80mg, Tramadol 100mg & Pain O Soma (Carisoprodol 350mg/500mg)', active: true },
+  { id: 'cat-nootropics', name: 'Nootropics & Focus', slug: 'nootropics-focus', description: 'Modafinil 200mg & Ritalin 10mg (Methylphenidate)', active: true }
+];
+
+export async function getCategoriesFromFirestore(): Promise<CategoryItem[]> {
+  try {
+    const snap = await getDocs(collection(db, CATEGORIES_COLLECTION));
+    const list: CategoryItem[] = [];
+    snap.forEach((d) => {
+      list.push(d.data() as CategoryItem);
+    });
+    if (list.length > 0) {
+      return list;
+    }
+  } catch (err) {
+    console.warn('[Firebase] Categories fetch notice:', err);
+  }
+  return DEFAULT_CATEGORIES;
+}
+
+export async function saveCategoryToFirestore(category: CategoryItem): Promise<boolean> {
+  try {
+    const ref = doc(db, CATEGORIES_COLLECTION, category.id);
+    await setDoc(ref, sanitizeForFirestore(category), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to save category in Firestore:', err);
+    return false;
+  }
+}
+
+export async function deleteCategoryFromFirestore(id: string): Promise<boolean> {
+  try {
+    const ref = doc(db, CATEGORIES_COLLECTION, id);
+    await deleteDoc(ref);
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete category in Firestore:', err);
+    return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 9. BANNERS IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export const DEFAULT_BANNERS: BannerItem[] = [
+  {
+    id: 'banner-free-delivery',
+    title: 'Free Royal Mail Tracked 24 Delivery',
+    subtitle: 'All orders containing Zopiclone (7.5mg, 10mg, 20mg) or Ritalin 10mg include complimentary tracked shipping across the UK.',
+    badge: 'Limited Dispense Offer',
+    ctaText: 'View Eligible Treatments',
+    ctaLinkTab: 'shop',
+    bgGradient: 'from-emerald-950 via-teal-900 to-[#01140e]',
+    active: true,
+    order: 1
+  },
+  {
+    id: 'banner-discrete-packaging',
+    title: '100% Discrete Plain Packaging Guaranteed',
+    subtitle: 'Zero pharmacy branding, plain unmarked protective padded envelopes delivered directly through your letterbox.',
+    badge: 'Dispensary Security',
+    ctaText: 'How Discreet Delivery Works',
+    ctaLinkTab: 'support',
+    bgGradient: 'from-[#031d14] via-[#052b1e] to-[#01140e]',
+    active: true,
+    order: 2
+  },
+  {
+    id: 'banner-same-day',
+    title: 'Same-Day Dispatch Before 3:00 PM',
+    subtitle: 'Orders confirmed with UK Faster Payments or Crypto before 3:00 PM dispatched same afternoon for next-day arrival.',
+    badge: 'Fast Express',
+    ctaText: 'Order Now',
+    ctaLinkTab: 'shop',
+    bgGradient: 'from-cyan-950 via-teal-950 to-[#01140e]',
+    active: true,
+    order: 3
+  }
+];
+
+export async function getBannersFromFirestore(): Promise<BannerItem[]> {
+  try {
+    const snap = await getDocs(collection(db, BANNERS_COLLECTION));
+    const list: BannerItem[] = [];
+    snap.forEach((d) => {
+      list.push(d.data() as BannerItem);
+    });
+    if (list.length > 0) {
+      return list.sort((a, b) => a.order - b.order);
+    }
+  } catch (err) {
+    console.warn('[Firebase] Banners fetch notice:', err);
+  }
+  return DEFAULT_BANNERS;
+}
+
+export async function saveBannerToFirestore(banner: BannerItem): Promise<boolean> {
+  try {
+    const ref = doc(db, BANNERS_COLLECTION, banner.id);
+    await setDoc(ref, sanitizeForFirestore(banner), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to save banner in Firestore:', err);
+    return false;
+  }
+}
+
+export async function deleteBannerFromFirestore(id: string): Promise<boolean> {
+  try {
+    const ref = doc(db, BANNERS_COLLECTION, id);
+    await deleteDoc(ref);
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete banner in Firestore:', err);
+    return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 10. FAQS IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export async function getFAQsFromFirestore(): Promise<FAQItem[]> {
+  try {
+    const snap = await getDocs(collection(db, FAQS_COLLECTION));
+    const list: FAQItem[] = [];
+    snap.forEach((d) => {
+      list.push(d.data() as FAQItem);
+    });
+    if (list.length > 0) {
+      return list.sort((a, b) => a.order - b.order);
+    }
+  } catch (err) {
+    console.warn('[Firebase] FAQs fetch notice:', err);
+  }
+  return FREQUENTLY_ASKED_QUESTIONS.map((f, i) => ({
+    id: `faq-${i + 1}`,
+    question: f.question,
+    answer: f.answer,
+    active: true,
+    order: i + 1,
+    category: 'General'
+  }));
+}
+
+export async function saveFAQToFirestore(faq: FAQItem): Promise<boolean> {
+  try {
+    const ref = doc(db, FAQS_COLLECTION, faq.id);
+    await setDoc(ref, sanitizeForFirestore(faq), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to save FAQ in Firestore:', err);
+    return false;
+  }
+}
+
+export async function deleteFAQFromFirestore(id: string): Promise<boolean> {
+  try {
+    const ref = doc(db, FAQS_COLLECTION, id);
+    await deleteDoc(ref);
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete FAQ in Firestore:', err);
+    return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 11. SUBSCRIBERS IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export async function getSubscribersFromFirestore(): Promise<SubscriberRecord[]> {
+  try {
+    const snap = await getDocs(collection(db, SUBSCRIBERS_COLLECTION));
+    const list: SubscriberRecord[] = [];
+    snap.forEach((d) => {
+      list.push(d.data() as SubscriberRecord);
+    });
+    return list.sort((a, b) => b.subscribedAt - a.subscribedAt);
+  } catch (err) {
+    console.warn('[Firebase] Subscribers fetch notice:', err);
+    return [];
+  }
+}
+
+export async function addSubscriberToFirestore(email: string, source: string = 'Website Footer'): Promise<boolean> {
+  if (!email || !email.includes('@')) return false;
+  const cleanEmail = email.trim().toLowerCase();
+  const id = `sub_${cleanEmail.replace(/[^a-z0-9]/g, '_')}`;
+  try {
+    const ref = doc(db, SUBSCRIBERS_COLLECTION, id);
+    await setDoc(ref, sanitizeForFirestore({
+      id,
+      email: cleanEmail,
+      subscribedAt: Date.now(),
+      dateStr: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+      source
+    }), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to add subscriber:', err);
+    return false;
+  }
+}
+
+export async function deleteSubscriberFromFirestore(id: string): Promise<boolean> {
+  try {
+    const ref = doc(db, SUBSCRIBERS_COLLECTION, id);
+    await deleteDoc(ref);
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete subscriber:', err);
+    return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 12. STORE SETTINGS IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export const DEFAULT_STORE_SETTINGS: StoreSettings = {
+  storeName: "PureSleep UK Pharmacy",
+  tagline: "Premier UK Online Pharmacy & Discreet Dispensary",
+  gphcRegNumber: "GPhC #9012384",
+  contactEmail: "dispensary@puresleeppharma.co.uk",
+  contactPhone: "07877 180391",
+  whatsappNumber: "+44 7877 180391",
+  address: "71 Queen Victoria Street",
+  city: "London",
+  postcode: "EC4V 4BE",
+  currency: "GBP (£)",
+  freeShippingThreshold: 60.00,
+  adminPin: "2026",
+  tracked48Fee: 3.99,
+  tracked24Fee: 5.99,
+  specialDeliveryFee: 9.99,
+  dispatchCutoffTime: "15:00",
+  bankName: "Barclays Commercial UK",
+  sortCode: "20-45-12",
+  accountNumber: "83921049",
+  accountName: "PureSleep Dispensary Ltd",
+  cryptoUsdtTrc20: "TX9zV2aG7KLM90nBx4pQ12837482910kd",
+  cryptoBtcAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+  telegramChatId: "8473581350",
+  notifyOnNewOrder: true,
+  notifyOnLowStock: true
+};
+
+export async function getStoreSettingsFromFirestore(): Promise<StoreSettings> {
+  try {
+    const ref = doc(db, SETTINGS_COLLECTION, 'store_config');
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      return { ...DEFAULT_STORE_SETTINGS, ...snap.data() } as StoreSettings;
+    }
+  } catch (err) {
+    console.warn('[Firebase] Settings fetch notice:', err);
+  }
+  return DEFAULT_STORE_SETTINGS;
+}
+
+export async function saveStoreSettingsToFirestore(settings: StoreSettings): Promise<boolean> {
+  try {
+    const ref = doc(db, SETTINGS_COLLECTION, 'store_config');
+    await setDoc(ref, sanitizeForFirestore({
+      ...settings,
+      updatedAt: Date.now()
+    }), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to save settings in Firestore:', err);
+    return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 13. AUDIT LOGS IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export async function getAuditLogsFromFirestore(): Promise<AuditLogEntry[]> {
+  try {
+    const snap = await getDocs(collection(db, AUDIT_LOGS_COLLECTION));
+    const list: AuditLogEntry[] = [];
+    snap.forEach((d) => {
+      list.push(d.data() as AuditLogEntry);
+    });
+    return list.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100);
+  } catch (err) {
+    console.warn('[Firebase] Audit logs fetch notice:', err);
+    return [];
+  }
+}
+
+export async function logAdminActivity(
+  action: string,
+  category: AuditLogEntry['category'],
+  affectedItem: string,
+  details?: string,
+  admin: string = 'Senior Pharmacist Admin'
+): Promise<void> {
+  try {
+    const logId = `log_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const logEntry: AuditLogEntry = {
+      id: logId,
+      action,
+      category,
+      affectedItem,
+      details,
+      admin,
+      timestamp: Date.now()
+    };
+    await setDoc(doc(db, AUDIT_LOGS_COLLECTION, logId), sanitizeForFirestore(logEntry));
+  } catch (err) {
+    console.warn('[Firebase] Failed to record audit log:', err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 14. STAFF & RBAC IN FIRESTORE
+// ─────────────────────────────────────────────────────────────
+
+export const DEFAULT_STAFF_MEMBERS: StaffMember[] = [
+  {
+    id: 'staff-1',
+    name: 'Dr. Alistair Vance',
+    email: 'pharmauk50@gmail.com',
+    role: 'Super Admin',
+    department: 'Superintendent Pharmacist & Executive Director',
+    status: 'Active',
+    lastLogin: 'Active now',
+    createdAt: Date.now() - 86400000 * 45,
+    phone: '+44 7877 180391',
+    avatarColor: 'from-emerald-500 to-teal-700'
+  },
+  {
+    id: 'staff-2',
+    name: 'Fiona Gallagher',
+    email: 'fiona.gallagher@puresleep.co.uk',
+    role: 'Finance Manager',
+    department: 'Accounts, Reconciliation & Gateway Settlement',
+    status: 'Active',
+    lastLogin: '25 mins ago',
+    createdAt: Date.now() - 86400000 * 30,
+    phone: '+44 7700 900142',
+    avatarColor: 'from-amber-500 to-orange-700'
+  },
+  {
+    id: 'staff-3',
+    name: 'Liam Davies',
+    email: 'liam.davies@puresleep.co.uk',
+    role: 'Order Manager',
+    department: 'Dispense Operations, Verification & Dispatch',
+    status: 'Active',
+    lastLogin: '1 hour ago',
+    createdAt: Date.now() - 86400000 * 20,
+    phone: '+44 7700 900581',
+    avatarColor: 'from-blue-500 to-indigo-700'
+  },
+  {
+    id: 'staff-4',
+    name: 'Chloe Patel',
+    email: 'chloe.patel@puresleep.co.uk',
+    role: 'Customer Support',
+    department: 'Patient Care & Consultation Queries',
+    status: 'Active',
+    lastLogin: '5 mins ago',
+    createdAt: Date.now() - 86400000 * 15,
+    phone: '+44 7700 900892',
+    avatarColor: 'from-purple-500 to-pink-700'
+  },
+  {
+    id: 'staff-5',
+    name: 'Marcus Reynolds',
+    email: 'marcus.reynolds@puresleep.co.uk',
+    role: 'Inventory Manager',
+    department: 'Central Stockroom & Denomination Procurement',
+    status: 'Active',
+    lastLogin: '3 hours ago',
+    createdAt: Date.now() - 86400000 * 35,
+    phone: '+44 7700 900334',
+    avatarColor: 'from-teal-500 to-emerald-800'
+  }
+];
+
+export async function getStaffMembersFromFirestore(): Promise<StaffMember[]> {
+  try {
+    const snap = await getDocs(collection(db, STAFF_COLLECTION));
+    const list: StaffMember[] = [];
+    snap.forEach((d) => list.push(d.data() as StaffMember));
+    if (list.length > 0) return list;
+  } catch (err) {
+    console.warn('[Firebase] Staff fetch notice:', err);
+  }
+  return DEFAULT_STAFF_MEMBERS;
+}
+
+export async function saveStaffMemberToFirestore(staff: StaffMember): Promise<boolean> {
+  try {
+    await setDoc(doc(db, STAFF_COLLECTION, staff.id), sanitizeForFirestore(staff), { merge: true });
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to save staff member in Firestore:', err);
+    return false;
+  }
+}
+
+export async function deleteStaffMemberFromFirestore(id: string): Promise<boolean> {
+  try {
+    await deleteDoc(doc(db, STAFF_COLLECTION, id));
+    return true;
+  } catch (err) {
+    console.error('[Firebase] Failed to delete staff member from Firestore:', err);
+    return false;
+  }
+}
+
+
 

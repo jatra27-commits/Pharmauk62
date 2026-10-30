@@ -105,7 +105,7 @@ export function getProductSEOMetadata(product: MedicineProduct): SEOMetadata {
         name: `${product.name} - ${pack.label}`,
         price: pack.price.toFixed(2),
         priceCurrency: 'GBP',
-        availability: 'https://schema.org/InStock',
+        availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
         sku: `${product.sku}-${pack.id}`,
         url: `${canonicalUrl}&pack=${pack.id}`
       }))
@@ -170,8 +170,8 @@ export function getCategorySEOMetadata(category: ProductCategory | 'All'): SEOMe
 
   const categoryDescriptions: Record<string, string> = {
     'Sleep Aids': 'Order genuine UK sleeping pills: Zopiclone 7.5mg/10mg/20mg, Zolpidem 10mg, Nitrazepam 5mg/10mg, and Midazolam 7.5mg. Discreet unmarked packaging with Royal Mail Tracked 24 delivery.',
-    'Anxiety & Calm': 'Buy authentic Diazepam (Sedil, Easium, Elipam), Clonazepam (Pase, Rivotril), Xanax, Alprax, Lorazepam, Bromazepam, Etizolam, and Pregabalin. Safe UK clinical supply with confidential dispatch.',
-    'Pain Relief': 'High strength pain relief medications: Tramadol 100mg and Pain O Soma (Carisoprodol 350mg/500mg muscle relaxant). Fast next-day UK delivery.',
+    'Anxiety & Calm': 'Buy authentic Diazepam (Sedil, Esium Diaz, Elipam, Bensedin), Clonazepam (Pase, Rivotril), Xanax, Alprax, Lorazepam, Bromazepam, Etizolam, and Pregabalin. Safe UK clinical supply with confidential dispatch.',
+    'Pain Relief': 'High strength pain relief medications: OxyContin 80mg (Oxycodone), Tramadol 100mg, and Pain O Soma (Carisoprodol 350mg/500mg muscle relaxant). Fast next-day UK delivery.',
     'Nootropics & Focus': 'Order Modafinil 200mg (Modalert) and Ritalin 10mg (Methylphenidate Hydrochloride) online in the UK. 100% genuine pharmaceuticals for focus, ADHD, and cognitive stamina.'
   };
 
@@ -244,7 +244,7 @@ export function getTabSEOMetadata(tab: NavigationTab): SEOMetadata {
     name: 'PureSleep Pharma UK',
     image: DEFAULT_OG_IMAGE,
     url: SITE_URL,
-    telephone: '+44 7700 900892',
+    telephone: '+44 7877 180391',
     priceRange: '££',
     address: {
       '@type': 'PostalAddress',

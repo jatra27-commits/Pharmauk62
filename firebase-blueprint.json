@@ -144,6 +144,69 @@
         "timestamp": { "type": "number" }
       },
       "required": ["id", "sender", "text", "timestamp"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Medicine category definition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "name"]
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Promotional dispensary banner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "active": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "title"]
+    },
+    "FAQ": {
+      "title": "FAQ",
+      "description": "Frequently asked question item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "active": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "question", "answer"]
+    },
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Newsletter email subscriber",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "subscribedAt": { "type": "number" }
+      },
+      "required": ["id", "email"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Admin activity audit log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "affectedItem": { "type": "string" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "action", "timestamp"]
     }
   },
   "firestore": {
@@ -170,6 +233,26 @@
     "/coupons/{couponId}": {
       "schema": "Coupon",
       "description": "Active promotional discount vouchers"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Medicine categories"
+    },
+    "/banners/{bannerId}": {
+      "schema": "Banner",
+      "description": "Store promotional banners"
+    },
+    "/faqs/{faqId}": {
+      "schema": "FAQ",
+      "description": "Frequently asked questions"
+    },
+    "/subscribers/{subscriberId}": {
+      "schema": "Subscriber",
+      "description": "Newsletter subscribers"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Admin activity audit records"
     },
     "/consultations/{sessionId}": {
       "schema": "Consultation",

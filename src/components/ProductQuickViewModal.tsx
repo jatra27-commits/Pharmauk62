@@ -34,24 +34,34 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
 }) => {
   if (!product) return null;
 
-  const [selectedPack, setSelectedPack] = useState<ProductPackOption>(
-    product.packOptions.find(p => p.popular) || product.packOptions[0]
-  );
+  const defaultPack = product.packOptions?.find(p => p.popular) || product.packOptions?.[0];
+  const [selectedPack, setSelectedPack] = useState<ProductPackOption>(defaultPack);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'info' | 'dosage' | 'cautions'>('info');
   const [isAdded, setIsAdded] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  const totalPrice = selectedPack.price * quantity;
+  React.useEffect(() => {
+    if (product?.packOptions?.length) {
+      const match = product.packOptions.find(p => p.popular) || product.packOptions[0];
+      setSelectedPack(match);
+      setQuantity(1);
+    }
+  }, [product]);
+
+  const activePack = selectedPack || defaultPack;
+  const totalPrice = (activePack?.price || 0) * quantity;
   const productUrl = `${window.location.origin}/?med=${product.id}`;
 
   const handleAdd = () => {
-    onAddToCart(product, selectedPack, quantity);
-    setIsAdded(true);
-    setTimeout(() => {
-      setIsAdded(false);
-      onClose();
-    }, 1200);
+    if (activePack) {
+      onAddToCart(product, activePack, quantity);
+      setIsAdded(true);
+      setTimeout(() => {
+        setIsAdded(false);
+        onClose();
+      }, 1200);
+    }
   };
 
   const handleCopyLink = () => {
@@ -65,7 +75,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Hello PureSleep Pharma, I'd like to order:\n- Product: ${product.name}\n- Pack: ${selectedPack.label}\n- Quantity: ${quantity}\n- Total Price: £${totalPrice.toFixed(2)}\n\nPlease dispatch via Royal Mail Tracked 24.`
+    `Hello PureSleep Pharma, I'd like to order:\n- Product: ${product.name}\n- Pack: ${activePack?.label || 'Pack'}\n- Quantity: ${quantity}\n- Total Price: £${totalPrice.toFixed(2)}\n\nPlease dispatch via Royal Mail Tracked 24.`
   );
 
   return (
@@ -118,9 +128,23 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
 
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 border-b border-slate-800 pb-4 pr-16 sm:pr-24">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-700 border border-cyan-400/40 flex items-center justify-center text-slate-950 font-bold shadow-lg shrink-0">
-            <Pill className="w-7 h-7" />
-          </div>
+          {product.imageUrl ? (
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#0b0f19] border border-cyan-500/40 p-1.5 flex items-center justify-center shrink-0 overflow-hidden shadow-lg">
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                }}
+              />
+            </div>
+          ) : (
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-700 border border-cyan-400/40 flex items-center justify-center text-slate-950 font-bold shadow-lg shrink-0">
+              <Pill className="w-7 h-7" />
+            </div>
+          )}
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-900 text-cyan-300 border border-slate-700 uppercase">
@@ -132,6 +156,11 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
               <span className="text-[10px] text-slate-400 font-mono">
                 SKU: <span itemProp="sku">{product.sku}</span>
               </span>
+              {!product.inStock && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-700/60 uppercase">
+                  Out of Stock
+                </span>
+              )}
             </div>
             <h1 itemProp="name" className="text-xl sm:text-2xl font-bold font-serif-heading text-white mt-1">
               {product.name}
@@ -171,7 +200,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
             {product.packOptions.map((pack) => {
-              const isSelected = selectedPack.id === pack.id;
+              const isSelected = activePack?.id === pack.id;
               const stripLabel = pack.id === 'sedil-500box'
                 ? '1 Box (500 Pcs)'
                 : (pack.stripsCount 
@@ -190,9 +219,13 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   <p className="text-xs font-bold text-white truncate">{stripLabel}</p>
                   <p className="text-[10px] text-slate-400 font-medium mt-0.5">{pack.tabletsCount} Units</p>
                   <p className="text-sm font-extrabold text-cyan-400 mt-1">£{pack.price.toFixed(2)}</p>
-                  {pack.freeDelivery ? (
-                    <span className="text-[9px] font-bold text-cyan-300 bg-cyan-950 px-1 py-0.5 rounded border border-cyan-600/40 inline-block mt-0.5">
-                      FREE Delivery
+                  {pack.bonusLabel ? (
+                    <span className="text-[9px] font-bold text-fuchsia-300 block mt-0.5">
+                      {pack.bonusLabel}
+                    </span>
+                  ) : pack.freeDelivery ? (
+                    <span className="text-[9px] font-bold text-emerald-400 block mt-0.5">
+                      Free Delivery
                     </span>
                   ) : pack.discountPercentage && pack.discountPercentage > 0 ? (
                     <span className="text-[9px] font-bold text-amber-300 block mt-0.5">
@@ -321,14 +354,19 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
           {/* Action CTAs */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
-              onClick={handleAdd}
-              className={`flex-1 sm:flex-initial px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer ${
-                isAdded
-                  ? 'bg-teal-500 text-slate-950 font-bold'
-                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold shadow-cyan-950/80'
+              onClick={product.inStock ? handleAdd : undefined}
+              disabled={!product.inStock}
+              className={`flex-1 sm:flex-initial px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg ${
+                !product.inStock
+                  ? 'bg-slate-800/80 text-slate-400 border border-slate-700 cursor-not-allowed'
+                  : isAdded
+                  ? 'bg-teal-500 text-slate-950 font-bold cursor-pointer'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold shadow-cyan-950/80 cursor-pointer'
               }`}
             >
-              {isAdded ? (
+              {!product.inStock ? (
+                <>Out of Stock</>
+              ) : isAdded ? (
                 <>
                   <CheckCircle2 className="w-4 h-4" /> Added to Basket
                 </>
@@ -340,13 +378,14 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
             </button>
 
             <a
-              href={`https://wa.me/447700900892?text=${whatsappMessage}`}
+              href={`https://wa.me/447877180391?text=${whatsappMessage}`}
               target="_blank"
               rel="noopener noreferrer"
+              title="Order on WhatsApp: 07877 180391"
               className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 hover:text-white flex items-center gap-1.5 text-xs font-semibold"
             >
               <MessageCircle className="w-4 h-4 text-[#25D366]" />
-              <span className="hidden sm:inline">WhatsApp</span>
+              <span className="hidden sm:inline">WhatsApp (07877 180391)</span>
             </a>
           </div>
 
